@@ -10,12 +10,6 @@
 - [Features](#features)
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
-- [Configuration](#configuration)
-- [Usage](#usage)
-- [Project Structure](#project-structure)
-- [Contributing](#contributing)
-- [License](#license)
-- [Contact](#contact)
 
 ## Features
 
@@ -36,8 +30,11 @@ Before you begin, ensure you have met the following requirements:
 
 Follow these steps to set up the ArithmeticChatAgent on your local machine:
 
-1. **Clone the Repository:**
-
-   ```bash
-   git clone https://github.com/deepakmehta1/agentic_samples.git
-   cd ArithmeticChatAgent
+1. close repo git clone https://github.com/deepakmehta1/agentic_samples.git
+2. do with the sameple - cd ArithmeticChatAgent
+3. create virtual env and activate it.
+4. install the deps from requirements.txt
+5. update OPENAI_API_KEY in .env
+6. run python3 main.py
+   
+   
