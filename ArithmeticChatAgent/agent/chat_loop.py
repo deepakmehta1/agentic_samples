@@ -1,6 +1,5 @@
-# agent/chat_loop.py
-
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
+
 
 def chat_loop(agent_graph):
     """
@@ -11,7 +10,7 @@ def chat_loop(agent_graph):
 
     while True:
         user_input = input("You: ")
-        if user_input.lower() in ['exit', 'quit']:
+        if user_input.lower() in ["exit", "quit"]:
             print("Goodbye!")
             break
 
@@ -25,7 +24,7 @@ def chat_loop(agent_graph):
         response = agent_graph.invoke({"messages": messages}, config)
 
         # Process and display each message in the response
-        for msg in response['messages']:
+        for msg in response["messages"]:
             if isinstance(msg, AIMessage):
                 print(f"AI: {msg.content}\n")
             elif isinstance(msg, HumanMessage):
@@ -34,5 +33,5 @@ def chat_loop(agent_graph):
                 print(f"System: {msg.content}\n")
             else:
                 # Handle Tool Messages
-                if hasattr(msg, 'name') and hasattr(msg, 'output'):
+                if hasattr(msg, "name") and hasattr(msg, "output"):
                     print(f"Tool ({msg.name}): {msg.output}\n")

@@ -1,12 +1,10 @@
-# agent/agent_setup.py
-
-import os
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import SystemMessage
 from langgraph.graph import MessagesState, START, StateGraph
 from langgraph.prebuilt import tools_condition, ToolNode
 from langgraph.checkpoint.memory import MemorySaver
 from tools.arithmetic_tools import TOOLS
+
 
 def setup_agent():
     """
@@ -17,7 +15,9 @@ def setup_agent():
     llm_with_tools = llm.bind_tools(TOOLS)
 
     # System message to define the assistant's role
-    sys_msg = SystemMessage(content="You are a helpful assistant tasked with performing arithmetic on a set of inputs.")
+    sys_msg = SystemMessage(
+        content="You are a helpful assistant tasked with performing arithmetic on a set of inputs."
+    )
 
     # Define the assistant node
     def assistant(state: MessagesState):
