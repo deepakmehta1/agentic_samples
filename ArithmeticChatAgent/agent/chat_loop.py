@@ -1,4 +1,7 @@
+# agent/chat_loop.py
+
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
+import json
 
 
 def chat_loop(agent_graph):
@@ -25,6 +28,7 @@ def chat_loop(agent_graph):
 
         # Process and display each message in the response
         for msg in response["messages"]:
+
             if isinstance(msg, AIMessage):
                 print(f"AI: {msg.content}\n")
             elif isinstance(msg, HumanMessage):
@@ -32,6 +36,34 @@ def chat_loop(agent_graph):
             elif isinstance(msg, SystemMessage):
                 print(f"System: {msg.content}\n")
             else:
-                # Handle Tool Messages
-                if hasattr(msg, "name") and hasattr(msg, "output"):
-                    print(f"Tool ({msg.name}): {msg.output}\n")
+                # Handle Tool Invocation Messages
+                if (
+                    hasattr(msg, "additional_kwargs")
+                    and "tool_calls" in msg.additional_kwargs
+                ):
+                    tool_calls = msg.additional_kwargs["tool_calls"]
+                    for tool_call in tool_calls:
+                        tool_name = tool_call.get("function", {}).get(
+                            "name", "Unknown Tool"
+                        )
+                        tool_args_json = tool_call.get("function", {}).get(
+                            "arguments", "{}"
+                        )
+                        try:
+                            tool_args = json.loads(tool_args_json)
+                        except json.JSONDecodeError:
+                            tool_args = (
+                                tool_args_json  # Keep as string if JSON parsing fails
+                            )
+                        print(f"Tool Called: {tool_name}")
+                        print(f"Arguments: {tool_args}\n")
+
+                # Handle Tool Response Messages
+                elif hasattr(msg, "name") and hasattr(msg, "content"):
+                    tool_name = msg.name
+                    tool_output = msg.content
+                    print(f"Tool ({tool_name}) Output: {tool_output}\n")
+
+                # Handle Other Messages (if any)
+                else:
+                    print(f"Unknown message type: {msg}\n")
