@@ -1,9 +1,9 @@
 
-# ArithmeticChatAgent
+# ArithmeticAgentWithLangchain
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 
-**ArithmeticChatAgent** is an interactive chatbot application designed to perform basic arithmetic operations using OpenAI's GPT-4 language model. The agent leverages an agentic flow with memory and utilizes modular tools to add, multiply, and divide integers based on user input, providing clear and concise responses.
+**ArithmeticAgentWithLangchain** is an interactive chatbot application designed to perform basic arithmetic operations using OpenAI's GPT-4 language model. The agent leverages an agentic flow with memory and utilizes modular tools to add, multiply, and divide integers based on user input, providing clear and concise responses.
 
 ## Table of Contents
 
