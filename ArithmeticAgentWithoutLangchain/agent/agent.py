@@ -1,5 +1,4 @@
-# agent/agent.py
-
+import inspect
 from openai import OpenAI
 import json
 from config.config import OPENAI_API_KEY, MODEL_NAME
@@ -33,10 +32,14 @@ class Agent:
                 tools=tool_schemas,
             )
 
-            # Corrected access to message content using dot notation for Pydantic model
-            assistant_message = response.choices[
-                0
-            ].message.content.strip()  # Access content directly
+            assistant_message = response.choices[0].message.content
+            if assistant_message:
+                assistant_message = (
+                    assistant_message.strip()
+                )  # Strip the content only if it's not None
+            else:
+                assistant_message = "No direct message from the assistant."  # Handle the case when content is None
+
             self.memory.add_message("assistant", assistant_message)
 
             # Access tool_calls correctly as a list
@@ -46,13 +49,39 @@ class Agent:
                     # Print out tool details
                     print(f"Tool ID: {tool_call.id}")
                     print(f"Tool Name: {tool_call.function.name}")
-                    print(f"Arguments: {tool_call.function.parameters}")
+                    print(f"Arguments: {tool_call.function.arguments}")
 
                     # Execute the tool based on the name and arguments
                     tool_name = tool_call.function.name
-                    args = (
-                        tool_call.function.parameters
-                    )  # Assumes arguments are already in correct format
+
+                    # Here we check if the arguments are a string and parse it
+                    args_str = (
+                        tool_call.function.arguments
+                    )  # This is the string like '{"a": 3, "b": 4}'
+                    try:
+                        args = json.loads(
+                            args_str
+                        )  # Parse the string into a dictionary
+                    except json.JSONDecodeError:
+                        args = {}  # Default to empty dictionary if parsing fails
+                        print(
+                            f"Error parsing arguments for tool {tool_name}: {args_str}"
+                        )
+
+                    # Dynamically map arguments using the function's signature
+                    if isinstance(args, dict):
+                        func = self.tools.get(tool_name)
+                        if func:
+                            # Get the function signature to match arguments dynamically
+                            signature = inspect.signature(func)
+                            bound_args = signature.bind(
+                                **args
+                            )  # Bind arguments from the dictionary to the function's signature
+                            bound_args.apply_defaults()  # Ensure default values are applied for missing arguments
+                            args = list(
+                                bound_args.arguments.values()
+                            )  # Convert bound arguments to a list
+
                     result = self.execute_tool(tool_name, args)
                     print(f"Tool result: {result}")
                     self.memory.add_message("tool", f"Result of {tool_name}: {result}")

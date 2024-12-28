@@ -15,7 +15,7 @@ if not OPENAI_API_KEY:
     )
 
 # Model configuration
-MODEL_NAME = "gpt-4"  # Ensure you have access to this model
+MODEL_NAME = "gpt-4o"  # Ensure you have access to this model
 
 # Memory configuration
 MEMORY_FILEPATH = "memory.json"
@@ -24,8 +24,9 @@ MEMORY_FILEPATH = "memory.json"
 SYSTEM_PROMPT = {
     "role": "system",
     "content": (
-        "You are a helpful assistant tasked with performing arithmetic on a set of inputs. "
-        "When you need to perform an arithmetic operation, respond with a JSON object specifying the tool and its arguments. "
-        'For example: {"tool": "add", "args": [5, 3]}'
+        "You are a helpful assistant. You can use the available tools to perform arithmetic operations when necessary. "
+        "Please provide clear, natural language responses to the user's queries. "
+        "If a calculation is needed, use the appropriate tool and respond with the result in a conversational manner. "
+        "Do not return any JSON objects in your replies."
     ),
 }
