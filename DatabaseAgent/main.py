@@ -28,9 +28,7 @@ def main() -> NoReturn:
     Starts the main interaction loop with the user. The loop handles user inputs and interacts with the assistant.
     """
     agent = setup_agent()
-    print(
-        "Welcome! You can perform arithmetic operations or interact with the database. Type 'exit' or 'quit' to end the session."
-    )
+    print("Welcome! Search for flights. Type 'exit' or 'quit' to end the session.")
 
     while True:
         try:
