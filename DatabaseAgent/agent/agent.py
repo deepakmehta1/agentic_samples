@@ -8,7 +8,7 @@ from tools.tools import (
     get_tools,
     get_tool_schemas,
 )
-from ..db_connector.connector import DBConnector
+from db_connector.connector import DBConnector
 from typing import List, Tuple, Optional, Dict
 
 

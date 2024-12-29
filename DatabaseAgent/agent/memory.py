@@ -1,6 +1,6 @@
 import json
 import os
-from config.config import MEMORY_FILEPATH, SYSTEM_PROMPT
+from config.config import MEMORY_FILEPATH
 from typing import List, Dict, Optional
 
 
@@ -23,9 +23,9 @@ class MemorySaver:
                 print(
                     f"Warning: {self.filepath} is corrupted. Initializing with system prompt."
                 )
-                self.messages = [SYSTEM_PROMPT]
+                self.messages = []
         else:
-            self.messages: List[Dict[str, str]] = [SYSTEM_PROMPT]
+            self.messages: List[Dict[str, str]] = []
 
     def save(self) -> None:
         """

@@ -2,7 +2,7 @@
 
 from agent.agent import Agent
 from agent.memory import MemorySaver
-from config.config import SYSTEM_PROMPT
+from config.config import system_prompt
 from db_connector.connector import DBConnector
 from typing import NoReturn
 
@@ -18,7 +18,7 @@ def setup_agent() -> Agent:
     db_connector = DBConnector()  # Initialize DBConnector
     db_connector.connect()  # Establish the database connection
     agent = Agent(
-        SYSTEM_PROMPT, memory, db_connector
+        system_prompt, memory, db_connector
     )  # Initialize agent with system prompt, memory, and DB connection
     return agent
 
