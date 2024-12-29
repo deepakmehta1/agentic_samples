@@ -1,20 +1,23 @@
+# tools/main.py
+
 from agent.agent import Agent
 from agent.memory import MemorySaver
 from config.config import SYSTEM_PROMPT
+from db_connector.connector import DBConnector
 from typing import NoReturn
 
 
 def setup_agent() -> Agent:
     """
-    Initializes the agent with tools and memory.
+    Initializes the agent with tools, memory, and database connection.
 
     Returns:
-        Agent: An instance of the Agent class with initialized memory and tools.
+        Agent: An instance of the Agent class with initialized memory, tools, and DB connection.
     """
     memory = MemorySaver()  # Initialize memory
-    agent = Agent(
-        SYSTEM_PROMPT, memory
-    )  # Initialize agent with system prompt and memory
+    db_connector = DBConnector()  # Initialize DBConnector
+    db_connector.connect()  # Establish the database connection
+    agent = Agent(SYSTEM_PROMPT, memory, db_connector)  # Initialize agent with system prompt, memory, and DB connection
     return agent
 
 
@@ -24,7 +27,7 @@ def main() -> NoReturn:
     """
     agent = setup_agent()
     print(
-        "Welcome! You can perform arithmetic operations. Type 'exit' or 'quit' to end the session."
+        "Welcome! You can perform arithmetic operations or interact with the database. Type 'exit' or 'quit' to end the session."
     )
 
     while True:

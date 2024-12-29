@@ -8,6 +8,7 @@ from tools.tools import (
     get_tools,
     get_tool_schemas,
 )
+from ..db_connector.connector import DBConnector
 from typing import List, Tuple, Optional, Dict
 
 
@@ -16,6 +17,7 @@ class Agent:
         self,
         system_prompt: dict,
         memory_saver: MemorySaver,
+        db_connector: DBConnector,
         tools: Dict[str, callable] = get_tools(),
     ) -> None:
         """
@@ -30,6 +32,7 @@ class Agent:
         self.system_prompt = system_prompt
         self.memory = memory_saver
         self.tools = tools
+        self.db_connector = db_connector
 
     def __get_messages(self) -> List[dict]:
         """
