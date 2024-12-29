@@ -1,13 +1,13 @@
 # tools/tools.py
 
-from tools.functions import add, subtract, multiply, divide
-from tools.schemas import add_schema, subtract_schema, multiply_schema, divide_schema
+from tools.functions import sql_query_executer
+from tools.schemas import sql_query_executer_schema
 
 # Tools dictionary mapping function names to actual functions
-TOOLS = {"add": add, "subtract": subtract, "multiply": multiply, "divide": divide}
+TOOLS = {"sql_query_executor": sql_query_executer}
 
 # List of tool schemas
-TOOL_SCHEMAS = [add_schema, subtract_schema, multiply_schema, divide_schema]
+TOOL_SCHEMAS = [sql_query_executer_schema]
 
 
 # Functions to access tools and schemas

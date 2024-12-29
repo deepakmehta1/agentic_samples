@@ -15,6 +15,7 @@ DB_USER = os.getenv("DB_USER")
 DB_PASSWORD = os.getenv("DB_PASSWORD")
 DB_PORT = os.getenv("DB_PORT", 5432)
 
+
 class DBConnector:
     def __init__(self):
         """Initialize the database connection."""
@@ -30,7 +31,7 @@ class DBConnector:
                     dbname=DB_NAME,
                     user=DB_USER,
                     password=DB_PASSWORD,
-                    port=DB_PORT
+                    port=DB_PORT,
                 )
                 self.cursor = self.connection.cursor()
                 print("Database connection established.")

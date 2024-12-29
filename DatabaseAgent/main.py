@@ -17,7 +17,9 @@ def setup_agent() -> Agent:
     memory = MemorySaver()  # Initialize memory
     db_connector = DBConnector()  # Initialize DBConnector
     db_connector.connect()  # Establish the database connection
-    agent = Agent(SYSTEM_PROMPT, memory, db_connector)  # Initialize agent with system prompt, memory, and DB connection
+    agent = Agent(
+        SYSTEM_PROMPT, memory, db_connector
+    )  # Initialize agent with system prompt, memory, and DB connection
     return agent
 
 

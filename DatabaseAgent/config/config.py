@@ -20,6 +20,7 @@ MODEL_NAME = "gpt-4o-2024-08-06"  # Ensure you have access to this model
 # Memory configuration
 MEMORY_FILEPATH = "memory.json"
 
+
 def generate_system_prompt(table_schema: str) -> dict:
     """
     Generates the system prompt with the given table schema.
@@ -61,10 +62,8 @@ def generate_system_prompt(table_schema: str) -> dict:
     Your task is to decide when and how to use the tools available to you and when to show the response to the user.
     """
 
-    return {
-        "role": "system",
-        "content": system_prompt_content
-    }
+    return {"role": "system", "content": system_prompt_content}
+
 
 # Example usage:
 table_schema_example = """

@@ -13,14 +13,16 @@ DB_USER = os.getenv("DB_USER")
 DB_PASSWORD = os.getenv("DB_PASSWORD")
 DB_PORT = os.getenv("DB_PORT", 5432)
 
+
 def load_sql_file(file_path):
     """
     Reads the SQL file and returns the SQL commands as a string.
     :param file_path: Path to the SQL file
     :return: SQL commands as a string
     """
-    with open(file_path, 'r') as file:
+    with open(file_path, "r") as file:
         return file.read()
+
 
 def execute_sql(sql_commands):
     """
@@ -34,13 +36,13 @@ def execute_sql(sql_commands):
             dbname=DB_NAME,
             user=DB_USER,
             password=DB_PASSWORD,
-            port=DB_PORT
+            port=DB_PORT,
         )
         cur = conn.cursor()
 
         # Execute the SQL commands
         cur.execute(sql_commands)
-        
+
         # Commit the transaction
         conn.commit()
         print("SQL commands executed successfully!")
@@ -54,10 +56,11 @@ def execute_sql(sql_commands):
         if conn:
             conn.rollback()
 
+
 def main():
     # Load the schema and data files
-    schema_sql = load_sql_file('db/flight_db_schema.sql')
-    data_sql = load_sql_file('db/flight_db_data.sql')
+    schema_sql = load_sql_file("db/flight_db_schema.sql")
+    data_sql = load_sql_file("db/flight_db_data.sql")
 
     # Execute schema creation
     print("Creating schema...")
@@ -67,5 +70,6 @@ def main():
     print("Inserting data...")
     execute_sql(data_sql)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()
