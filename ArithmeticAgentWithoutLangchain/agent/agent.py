@@ -61,17 +61,8 @@ class Agent:
                 response_format=OpenAIResponse,
             )
 
-            assistant_message = response.choices[
-                0
-            ].message.content  # Correct access to message content
+            assistant_message = response.choices[0].message.parsed
             message_type = "assistant"  # Default to assistant response
-
-            if assistant_message:
-                assistant_message = (
-                    assistant_message.strip()
-                )  # Strip content to remove leading/trailing whitespace
-            else:
-                assistant_message = "No direct message from the assistant."  # Default if no message content
 
             # Access tool_calls correctly if any exist
             tool_calls = response.choices[0].message.tool_calls
@@ -195,9 +186,6 @@ class Agent:
         while True:
             assistant_response, message_type = self.call_llm()  # Call the LLM
 
-            if assistant_response is None:
-                return "There was an error processing your request."
-
             if message_type == "tools":
                 # If it's a tool call, process it and send the result back to the model
                 print(f"Processing tool call: {assistant_response}")
@@ -205,7 +193,7 @@ class Agent:
             else:
                 # If it's the assistant's final response, return it to the user
                 print(f"Internal processing: {assistant_response}")
-                self.memory.add_message("assistant", assistant_response)
+                self.memory.add_message("assistant", assistant_response.content)
                 if (
                     assistant_response.show_to_user
                 ):  # Only return the result if show_to_user is True
