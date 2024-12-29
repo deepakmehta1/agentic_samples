@@ -1,6 +1,3 @@
--- Create the flight_db database (this should be done separately if the DB doesn't exist yet)
--- CREATE DATABASE flight_db;
-
 -- Table for countries
 CREATE TABLE country (
     country_id SERIAL PRIMARY KEY,
