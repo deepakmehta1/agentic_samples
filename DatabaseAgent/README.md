@@ -43,4 +43,35 @@ This project provides a **Database Agent** that enables direct querying from a P
    python3 main.py
     ```
 
+## Example execution
+
+```json
+
+[
+  {
+    "role": "user",
+    "content": "Do we have flghts between Los Angeles to Mumbai in Jan 2024?"
+  },
+  {
+    "role": "function",
+    "content": "Tool result for {\"query\": \"SELECT city_id FROM city WHERE city_name = 'Los Angeles';\"}: (1,)",
+    "name": "sql_query_executer"
+  },
+  {
+    "role": "function",
+    "content": "Tool result for {\"query\": \"SELECT city_id FROM city WHERE city_name = 'Mumbai';\"}: (3,)",
+    "name": "sql_query_executer"
+  },
+  {
+    "role": "function",
+    "content": "Tool result for {\"query\":\"SELECT * FROM flight WHERE source_city_id = 1 AND dest_city_id = 3 AND flight_date BETWEEN '2024-01-01' AND '2024-01-31';\"}: (1, 1, 1, 3, datetime.datetime(2024, 1, 5, 10, 0))",
+    "name": "sql_query_executer"
+  },
+  {
+    "role": "assistant",
+    "content": "Yes, there is a flight from Los Angeles to Mumbai in January 2024. The flight is scheduled for January 5th, 2024 at 10:00 AM."
+  }
+]
+```
+
 Give it a star if you got something out of it. :) 
