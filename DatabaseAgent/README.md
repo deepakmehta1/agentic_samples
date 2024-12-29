@@ -33,7 +33,12 @@ This project provides a **Database Agent** that enables direct querying from a P
 
 5. Make sure you update the .env with correct values.
 
-6. Run the agent:
+6. Load the DB Schema and data
+   ```bash
+   python3 db/load_data.py
+    ```
+
+7. Run the agent:
    ```bash
    python3 main.py
     ```
