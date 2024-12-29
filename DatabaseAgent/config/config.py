@@ -1,5 +1,3 @@
-# DatabaseAgent/config/config.py
-
 import os
 from dotenv import load_dotenv
 
@@ -19,6 +17,17 @@ MODEL_NAME = "gpt-4o-2024-08-06"  # Ensure you have access to this model
 
 # Memory configuration
 MEMORY_FILEPATH = "memory.json"
+
+
+def load_schema_from_file(file_path: str) -> str:
+    """
+    Loads the SQL schema from the specified file.
+
+    :param file_path: Path to the schema SQL file.
+    :return: SQL schema content as a string.
+    """
+    with open(file_path, "r") as file:
+        return file.read()
 
 
 def generate_system_prompt(table_schema: str) -> dict:
@@ -66,8 +75,6 @@ def generate_system_prompt(table_schema: str) -> dict:
 
 
 # Example usage:
-table_schema_example = """
-Table Name: transactions
-Columns: transaction_id (INT), transaction_date (DATE), sales (DECIMAL)
-"""
-system_prompt = generate_system_prompt(table_schema_example)
+schema_file_path = "db/flight_db_schema.sql"  # Path to your schema SQL file
+table_schema = load_schema_from_file(schema_file_path)
+system_prompt = generate_system_prompt(table_schema)
