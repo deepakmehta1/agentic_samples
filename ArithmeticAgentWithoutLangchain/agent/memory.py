@@ -27,13 +27,16 @@ class MemorySaver:
         except Exception as e:
             print(f"Error saving memory to {self.filepath}: {e}")
 
-    def add_message(self, role, content):
-        self.messages.append({"role": role, "content": content})
+    def add_message(self, role, content, name=None):
+        if role == "function":
+            self.messages.append({"role": role, "content": content, "name": name})
+        else:
+            self.messages.append({"role": role, "content": content})
         self.save()
 
     def get_messages(self):
         return self.messages
 
     def clear_memory(self):
-        self.messages = [SYSTEM_PROMPT]
+        self.messages = []
         self.save()

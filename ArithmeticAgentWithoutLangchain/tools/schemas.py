@@ -7,7 +7,10 @@ add_schema = {
         "parameters": {
             "type": "object",
             "properties": {"a": {"type": "number"}, "b": {"type": "number"}},
+            "required": ["a", "b"],
+            "additionalProperties": False,
         },
+        "strict": True,
     },
 }
 
@@ -18,7 +21,10 @@ subtract_schema = {
         "parameters": {
             "type": "object",
             "properties": {"a": {"type": "number"}, "b": {"type": "number"}},
+            "required": ["a", "b"],
+            "additionalProperties": False,
         },
+        "strict": True,
     },
 }
 
@@ -29,7 +35,10 @@ multiply_schema = {
         "parameters": {
             "type": "object",
             "properties": {"a": {"type": "number"}, "b": {"type": "number"}},
+            "required": ["a", "b"],
+            "additionalProperties": False,
         },
+        "strict": True,
     },
 }
 
@@ -40,6 +49,9 @@ divide_schema = {
         "parameters": {
             "type": "object",
             "properties": {"a": {"type": "number"}, "b": {"type": "number"}},
+            "required": ["a", "b"],
+            "additionalProperties": False,
         },
+        "strict": True,
     },
 }

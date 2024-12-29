@@ -2,7 +2,7 @@
 
 from agent.agent import Agent
 from agent.memory import MemorySaver
-from agent.tools import TOOLS
+from config.config import SYSTEM_PROMPT
 
 
 def setup_agent():
@@ -10,7 +10,7 @@ def setup_agent():
     Initializes the agent with tools and memory.
     """
     memory = MemorySaver()
-    agent = Agent(TOOLS, memory)
+    agent = Agent(SYSTEM_PROMPT, memory)
     return agent
 
 
@@ -22,11 +22,14 @@ def main():
     while True:
         try:
             user_input = input("You: ").strip()
+            print("-" * 100)
             if user_input.lower() in ["exit", "quit"]:
                 print("Goodbye!")
                 break
             response = agent.interact(user_input)
+            print("-" * 100)
             print(f"Assistant: {response}")
+            print("-" * 100)
         except (KeyboardInterrupt, EOFError):
             print("\nGoodbye!")
             break

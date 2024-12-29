@@ -2,49 +2,44 @@ import inspect
 from openai import OpenAI
 import json
 from config.config import OPENAI_API_KEY, MODEL_NAME
+from .openai_response import OpenAIResponse
 from .memory import MemorySaver
 from tools.tools import (
     get_tools,
     get_tool_schemas,
-)  # Import tools and schemas from tools directory
+)
 
 
 class Agent:
-    def __init__(self, tools, memory_saver):
+    def __init__(self, system_prompt, memory_saver, tools=get_tools()):
         self.client = OpenAI(api_key=OPENAI_API_KEY)
-        self.tools = tools
+        self.system_prompt = system_prompt
         self.memory = memory_saver
+        self.tools = tools
+
+    def __get_messages(self):
+        return [self.system_prompt] + (self.memory.get_messages())
 
     def call_llm(self):
         try:
-            tool_schemas = (
-                get_tool_schemas()
-            )  # Get the tool schemas from the tools module
-
-            # Now pass the 'functions' to the API
-            response = self.client.chat.completions.create(
+            response = self.client.beta.chat.completions.parse(
                 model=MODEL_NAME,
-                messages=self.memory.get_messages(),
+                messages=self.__get_messages(),
                 temperature=0,
                 max_tokens=1000,
                 n=1,
                 stop=None,
-                tools=tool_schemas,
+                tools=get_tool_schemas(),
+                response_format=OpenAIResponse,
             )
 
-            assistant_message = response.choices[0].message.content
-            if assistant_message:
-                assistant_message = (
-                    assistant_message.strip()
-                )  # Strip the content only if it's not None
-            else:
-                assistant_message = "No direct message from the assistant."  # Handle the case when content is None
-
-            self.memory.add_message("assistant", assistant_message)
+            assistant_message = response.choices[0].message.parsed
+            message_type = "assistant"
 
             # Access tool_calls correctly as a list
             tool_calls = response.choices[0].message.tool_calls
             if tool_calls:
+                message_type = "tools"  # If there are tool calls, it's a tool message
                 for tool_call in tool_calls:
                     # Print out tool details
                     print(f"Tool ID: {tool_call.id}")
@@ -84,13 +79,24 @@ class Agent:
 
                     result = self.execute_tool(tool_name, args)
                     print(f"Tool result: {result}")
-                    self.memory.add_message("tool", f"Result of {tool_name}: {result}")
+                    result_string = f"Tool result: {result}"
+                    # self.memory.add_message("tool", f"Result of {tool_name}: {result}")
 
-            return assistant_message
+                    # Send the result back to the model if it's a tool call
+                    # You can store it in memory or process the next steps
+                    # tool_event = {
+                    #     'tool': result,
+                    #     'status': 'completed'
+                    # }
+                    self.memory.add_message(
+                        "function", result_string, tool_call.function.name
+                    )
+                    # self.memory.add_message("user", 'multiply 3 by 4')
+            return assistant_message, message_type
 
         except Exception as e:
             print(f"Error calling OpenAI API: {e}")
-            return None
+            return None, None  # Return None if error occurs
 
     def parse_tool_request(self, message):
         try:
@@ -120,23 +126,17 @@ class Agent:
 
     def interact(self, user_input):
         self.memory.add_message("user", user_input)
-        assistant_response = self.call_llm()
-        if assistant_response is None:
-            return "There was an error processing your request."
 
-        tool, args = self.parse_tool_request(assistant_response)
-        if tool:
-            print(f"Executing tool: {tool} with arguments {args}")
-            result = self.execute_tool(tool, args)
-            tool_message = f"Result of {tool}({', '.join(map(str, args))}) is {result}"
-            self.memory.add_message("tool", tool_message)
-            print(f"Tool result: {result}")
-            follow_up = self.call_llm()
-            if follow_up:
-                print(f"Assistant: {follow_up}")
-                return follow_up
+        while True:
+            assistant_response, message_type = self.call_llm()
+
+            if message_type == "tools":
+                # If it's a tool call, process it and send the result back to the model
+                print(f"Processing tool call: {assistant_response}")
+                # Store the tool result in memory (this is optional, based on your design)
             else:
-                return "There was an error processing the tool's result."
-        else:
-            print(f"Assistant: {assistant_response}")
-            return assistant_response
+                # If it's the assistant's final response, we show it to the user
+                print(f"internal processing: {assistant_response}")
+                self.memory.add_message("assistant", assistant_response.content)
+                if assistant_response.show_to_user:
+                    return assistant_response.content
