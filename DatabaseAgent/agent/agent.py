@@ -64,17 +64,8 @@ class Agent:
                 response_format=OpenAIResponse,
             )
 
-            assistant_message = response.choices[
-                0
-            ].message.content  # Correct access to message content
+            assistant_message = response.choices[0].message.parsed
             message_type = "assistant"  # Default to assistant response
-
-            if assistant_message:
-                assistant_message = (
-                    assistant_message.strip()
-                )  # Strip content to remove leading/trailing whitespace
-            else:
-                assistant_message = "No direct message from the assistant."  # Default if no message content
 
             # Access tool_calls correctly if any exist
             tool_calls = response.choices[0].message.tool_calls
@@ -109,7 +100,7 @@ class Agent:
                                 func
                             )  # Get the function signature
                             bound_args = signature.bind(
-                                **args
+                                self.db_connector, **args
                             )  # Bind arguments to the function signature
                             bound_args.apply_defaults()  # Apply default values for missing arguments
                             args = list(
@@ -119,7 +110,7 @@ class Agent:
                     # Execute the tool based on the mapped arguments
                     result = self.execute_tool(tool_name, args)
                     print(f"Tool result: {result}")
-                    result_string = f"Tool result: {result}"
+                    result_string = f"Tool result for {args_str}: {result}"
 
                     # Send the tool result back to the model if it is a tool call
                     self.memory.add_message(
@@ -129,39 +120,11 @@ class Agent:
             return (
                 assistant_message,
                 message_type,
-            )  # Return both assistant message and message type
+            )
 
         except Exception as e:
             print(f"Error calling OpenAI API: {e}")
             return None, None  # Return None if an error occurs
-
-    def parse_tool_request(
-        self, message: str
-    ) -> Tuple[Optional[str], Optional[List[dict]]]:
-        """
-        Parses the assistant's message to detect if it involves a tool request.
-
-        Args:
-            message: The assistant's message to parse.
-
-        Returns:
-            - tool: The tool to be invoked (e.g., 'add', 'subtract').
-            - args: A list of arguments for the tool, or None if no tool is found.
-        """
-        try:
-            json_start = message.find("{")
-            json_end = message.rfind("}") + 1
-            if json_start == -1 or json_end == 0:
-                return None, None
-            json_str = message[json_start:json_end]
-            data = json.loads(json_str)
-            tool = data.get("tool")
-            args = data.get("args", [])
-            if tool in self.tools and isinstance(args, list):
-                return tool, args
-        except (json.JSONDecodeError, AttributeError):
-            pass
-        return None, None
 
     def execute_tool(self, tool: str, args: List) -> str:
         """
@@ -198,9 +161,6 @@ class Agent:
         while True:
             assistant_response, message_type = self.call_llm()  # Call the LLM
 
-            if assistant_response is None:
-                return "There was an error processing your request."
-
             if message_type == "tools":
                 # If it's a tool call, process it and send the result back to the model
                 print(f"Processing tool call: {assistant_response}")
@@ -208,7 +168,7 @@ class Agent:
             else:
                 # If it's the assistant's final response, return it to the user
                 print(f"Internal processing: {assistant_response}")
-                self.memory.add_message("assistant", assistant_response)
+                self.memory.add_message("assistant", assistant_response.content)
                 if (
                     assistant_response.show_to_user
                 ):  # Only return the result if show_to_user is True

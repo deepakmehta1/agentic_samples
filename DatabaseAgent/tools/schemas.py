@@ -7,7 +7,7 @@ sql_query_executer_schema = {
         "parameters": {
             "type": "object",
             "properties": {"query": {"type": "string"}},
-            "required": ["a", "b"],
+            "required": ["query"],
             "additionalProperties": False,
         },
         "strict": True,

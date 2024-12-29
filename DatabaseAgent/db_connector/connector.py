@@ -39,8 +39,8 @@ class DBConnector:
                 print(f"Error connecting to the database: {e}")
                 raise
 
-    def execute_query(self, query: str, params: tuple = None):
-        """Execute a raw SQL query."""
+    def execute_query(self, query: str, params: tuple = None) -> str:
+        """Execute a raw SQL query and return the result as a string."""
         if self.connection is None:
             self.connect()
 
@@ -51,22 +51,27 @@ class DBConnector:
             else:
                 self.cursor.execute(query)
 
-            # Commit the transaction if it's a modifying query
+            # Commit the transaction if it's a modifying query (INSERT, UPDATE, DELETE)
             if query.strip().lower().startswith(("insert", "update", "delete")):
                 self.connection.commit()
+                return "Query executed successfully."
 
             # Fetch results if it's a SELECT query
             if query.strip().lower().startswith("select"):
-                return self.cursor.fetchall()
+                results = self.cursor.fetchall()
+                # Convert the result into a string format
+                return str(results[0]) if results else "null"
 
         except Exception as e:
             print(f"Error executing query: {e}")
             self.connection.rollback()
+            return f"Error: {e}"
 
-    def close(self):
-        """Close the database connection."""
-        if self.cursor:
-            self.cursor.close()
-        if self.connection:
-            self.connection.close()
-        print("Database connection closed.")
+
+def close(self):
+    """Close the database connection."""
+    if self.cursor:
+        self.cursor.close()
+    if self.connection:
+        self.connection.close()
+    print("Database connection closed.")
