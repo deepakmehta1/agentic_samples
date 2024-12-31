@@ -1,6 +1,6 @@
 # DatabaseAgent - PostgreSQL Database Query Agent
 
-This project provides a **Database Agent** that enables direct querying from a PostgreSQL database. It is capable of executing **multiple and complex queries** to retrieve data and answer the user's query. The agent breaks down complex queries into smaller ones, processes them sequentially, and returns the results in a human-readable format. Whether the query is a `SELECT`, `INSERT`, `UPDATE`, or `DELETE`, the agent ensures accurate and efficient query execution.
+This project provides a **Database Agent** that enables direct querying from a PostgreSQL database. It is capable of executing **multiple and complex queries** to retrieve data and answer the user's query. The agent breaks down complex queries into smaller ones, processes them sequentially, and returns the results in a human-readable format. Whether the query is a `SELECT`, `INSERT`, `UPDATE`, or `DELETE`, the agent ensures accurate and efficient query execution. 
 
 
 ## Features
